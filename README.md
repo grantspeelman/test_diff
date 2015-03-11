@@ -1,4 +1,5 @@
 # TestDiff
+[![Build Status](https://travis-ci.org/grantspeelman/test_diff.svg?branch=master)](https://travis-ci.org/grantspeelman/test_diff)
 
 Gem that attempts to find the tests that are required to run for the changes you have made
 
