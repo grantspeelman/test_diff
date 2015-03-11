@@ -4,21 +4,22 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'test_diff/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "test_diff"
+  spec.name          = 'test_diff'
   spec.version       = TestDiff::VERSION
-  spec.authors       = ["Grant Speelman"]
-  spec.email         = ["grant.speelman@ubxd.com"]
+  spec.authors       = ['Grant Speelman']
+  spec.email         = ['grant.speelman@ubxd.com']
 
-  spec.summary       = %q{Gem that attempts to find the tests that are required to run for the changes you have made.}
-  spec.description   = %q{Gem that attempts to find the tests that are required to run for the changes you have made.}
-  spec.homepage      = "https://github.com/grantspeelman/test_diff"
-  spec.license       = "MIT"
+  spec.summary       = 'Gem that attempts to find the tests that are required to run for the changes you have made.'
+  spec.description   = 'Gem that attempts to find the tests that are required to run for the changes you have made.'
+  spec.homepage      = 'https://github.com/grantspeelman/test_diff'
+  spec.license       = 'MIT'
 
-  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
-  spec.bindir        = "exe"
-  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
-  spec.require_paths = ["lib"]
+  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(/^(test|spec|features)\//) }
+  spec.bindir        = 'exe'
+  spec.executables   = spec.files.grep(/^exe\//) { |f| File.basename(f) }
+  spec.require_paths = ['lib']
 
-  spec.add_development_dependency "bundler", "~> 1.8"
-  spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency 'rubocop'
+  spec.add_development_dependency 'bundler', '~> 1.8'
+  spec.add_development_dependency 'rake', '~> 10.0'
 end
