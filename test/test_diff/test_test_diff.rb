@@ -1,6 +1,6 @@
-require 'minitest_helper'
+require File.expand_path '../../test_helper.rb', __FILE__
 
-describe TestTestDiff do
+describe TestDiff do
   it 'it has a version number' do
     ::TestDiff::VERSION.wont_be_nil
   end
