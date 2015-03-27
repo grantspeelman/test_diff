@@ -11,9 +11,14 @@ class TestDiffBuilder < Thor
     TestDiff::BuildCoverage.new(spec_folder, pre_load, continue).run
   end
 
+  desc 'track build', 'track this HEAD as the last test diff index'
+  def track_build(sha1 = nil)
+    TestDiff::TrackBuild.new(sha1).run
+  end
+
   desc 'run_spec_diff spec master', 'runs the specs difference between the branches'
-  def run_spec_diff(spec_folder = 'spec', branch = 'master', groups_of = nil, group = '0')
-    TestDiff::RunDiff.new(spec_folder, branch, groups_of, group).run
+  def run_spec_diff(spec_folder = 'spec', sha1 = nil, groups_of = nil, group = '0')
+    TestDiff::RunDiff.new(spec_folder, sha1, groups_of, group).run
   end
 end
 

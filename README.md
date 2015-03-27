@@ -21,7 +21,13 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Building the test coverage index
+
+    $ bundle exec test_diff build_coverage spec spec/spec_helper.rb
+    $ git add test_diff_coverage
+    $ git commit
+
+
 
 ## Development
 

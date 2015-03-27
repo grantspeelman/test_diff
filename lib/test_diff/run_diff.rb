@@ -2,11 +2,11 @@
 module TestDiff
   # Class used to calculate the tests than need to be run
   class RunDiff
-    attr_reader :spec_folder, :branch, :groups_of, :group
+    attr_reader :spec_folder, :sha1, :groups_of, :group
 
-    def initialize(spec_folder, branch, groups_of, group)
+    def initialize(spec_folder, sha1, groups_of, group)
       @spec_folder = spec_folder
-      @branch = branch
+      @sha1 = sha1 ||  File.read('test_diff_coverage/sha')
       @specs_to_run = []
       @storage = Storage.new
       @groups_of = groups_of
@@ -44,7 +44,7 @@ module TestDiff
     end
 
     def add_changed_files
-      cmd = "git diff --name-only #{branch} HEAD"
+      cmd = "git diff --name-only #{sha1} HEAD"
       `#{cmd}`.split("\n").each do |file_name|
         if file_name.end_with?('spec.rb') || file_name.end_with?('test.rb')
           @specs_to_run << file_name

@@ -20,6 +20,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'thor'
+  spec.add_dependency 'git'
 
   spec.add_development_dependency 'rubocop'
   spec.add_development_dependency 'minitest', '>= 0.8.0'

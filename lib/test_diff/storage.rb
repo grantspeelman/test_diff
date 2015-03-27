@@ -34,7 +34,7 @@ module TestDiff
     def find_for(file)
       results = []
       Dir["#{@folder}/**/*.yml"].each do |storage_file|
-        find_for_storage_file(results,storage_file, file)
+        find_for_storage_file(results, storage_file, file)
       end
       results
     end
