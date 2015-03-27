@@ -41,28 +41,34 @@ describe TestDiff::Storage do
 
   describe 'find_for' do
     it 'returns empty array' do
-      subject.find_for('test.rb').must_equal []
+      subject.find_for(['test.rb']).must_equal []
     end
 
     it 'ignores hello_spec.rb because only loaded' do
       subject.set('hello_spec.rb', 'test.rb' => '0,0,,,0')
-      subject.find_for('test.rb').must_equal []
+      subject.find_for(['test.rb']).must_equal []
     end
 
     it 'returns hello_spec.rb' do
       subject.set('hello_spec.rb', 'test.rb' => '1,1')
-      subject.find_for('test.rb').must_equal ['hello_spec.rb']
+      subject.find_for(['test.rb']).must_equal ['hello_spec.rb']
     end
 
     it 'returns hello_spec.rb and spec/tester_spec.rb' do
       subject.set('hello_spec.rb', 'test.rb' => '1,1')
       subject.set('spec/tester_spec.rb', 'test.rb' => '1,1')
-      subject.find_for('test.rb').must_equal %w(hello_spec.rb spec/tester_spec.rb)
+      subject.find_for(['test.rb']).must_equal %w(hello_spec.rb spec/tester_spec.rb)
+    end
+
+    it 'returns only sub folder' do
+      subject.set('spec_contiki/hello_spec.rb', 'test.rb' => '1,1')
+      subject.set('spec/tester_spec.rb', 'test.rb' => '1,1')
+      subject.find_for(['test.rb'],'spec').must_equal %w(spec/tester_spec.rb)
     end
 
     it 'wont return test/other_spec.rb' do
       subject.set('test/other_spec.rb', 'test.rb' => '1,1')
-      subject.find_for('app/file.rb').must_equal []
+      subject.find_for(['app/file.rb']).must_equal []
     end
   end
 end

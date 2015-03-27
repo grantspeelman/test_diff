@@ -15,6 +15,7 @@ module TestDiff
 
     def run
       add_changed_files
+      remove_tests_that_do_not_exist
       remove_tests_in_wrong_folder
       select_test_group
       run_test_group
@@ -37,6 +38,12 @@ module TestDiff
       @specs_to_run = @specs_to_run.slice(group.to_i * groups_size, groups_size)
     end
 
+    def remove_tests_that_do_not_exist
+      @specs_to_run.delete_if do |s|
+        !File.exist?(s)
+      end
+    end
+
     def remove_tests_in_wrong_folder
       @specs_to_run.delete_if do |s|
         !s.start_with?("#{spec_folder}/")
@@ -45,21 +52,24 @@ module TestDiff
 
     def add_changed_files
       cmd = "git diff --name-only #{sha1} HEAD"
+      files = []
       `#{cmd}`.split("\n").each do |file_name|
         if file_name.end_with?('spec.rb') || file_name.end_with?('test.rb')
           @specs_to_run << file_name
         elsif !file_name.start_with?(@storage.folder)
-          _add_calculated_tests(file_name)
+          files << file_name
           _add_rails_view_spec(file_name)
         end
       end
+      _add_calculated_tests(files)
 
       @specs_to_run.flatten!
       @specs_to_run.sort!
+      @specs_to_run.uniq!
     end
 
-    def _add_calculated_tests(file_name)
-      @specs_to_run << @storage.find_for(file_name)
+    def _add_calculated_tests(files)
+      @specs_to_run << @storage.find_for(files, spec_folder)
     end
 
     def _add_rails_view_spec(file_name)

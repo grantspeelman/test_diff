@@ -31,10 +31,12 @@ module TestDiff
       end
     end
 
-    def find_for(file)
+    def find_for(files, sub_folder = nil)
       results = []
-      Dir["#{@folder}/**/*.yml"].each do |storage_file|
-        find_for_storage_file(results, storage_file, file)
+      root_folder = @folder
+      root_folder += "/#{sub_folder}" if sub_folder
+      Dir["#{root_folder}/**/*.yml"].each do |storage_file|
+        find_for_storage_file(results, storage_file, files)
       end
       results
     end
@@ -47,10 +49,13 @@ module TestDiff
 
     private
 
-    def find_for_storage_file(results, storage_file, file)
+    def find_for_storage_file(results, storage_file, files)
       YAML::Store.new(storage_file).transaction(true) do |store|
-        unless store[file].to_s.split(',').delete_if { |s| s == '' || s == '0' }.empty?
-          results << storage_file.gsub('.yml', '').gsub("#{@folder}/", '')
+        found_files = files & store.roots
+        found_files.each do |file|
+          unless store[file].to_s.split(',').delete_if { |s| s == '' || s == '0' }.empty?
+            results << storage_file.gsub('.yml', '').gsub("#{@folder}/", '')
+          end
         end
       end
     end
