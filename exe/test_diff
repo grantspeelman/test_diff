@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'thor'
+
+require 'test_diff'
+
+# thor class to allow execution
+class TestDiffBuilder < Thor
+  desc 'build_coverage spec', 'runs the specs and generates reverse_coverage'
+  def build_coverage(spec_folder = 'spec', pre_load = nil, continue = nil)
+    TestDiff::BuildCoverage.new(spec_folder, pre_load, continue).run
+  end
+
+  desc 'run_spec_diff spec master', 'runs the specs difference between the branches'
+  def run_spec_diff(spec_folder = 'spec', branch = 'master', groups_of = nil, group = '0')
+    TestDiff::RunDiff.new(spec_folder, branch, groups_of, group).run
+  end
+end
+
+TestDiffBuilder.start(ARGV)
