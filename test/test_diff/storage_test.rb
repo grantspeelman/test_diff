@@ -63,7 +63,7 @@ describe TestDiff::Storage do
     it 'returns only sub folder' do
       subject.set('spec_contiki/hello_spec.rb', 'test.rb' => '1,1')
       subject.set('spec/tester_spec.rb', 'test.rb' => '1,1')
-      subject.find_for(['test.rb'],'spec').must_equal %w(spec/tester_spec.rb)
+      subject.find_for(['test.rb'], 'spec').must_equal %w(spec/tester_spec.rb)
     end
 
     it 'wont return test/other_spec.rb' do

@@ -53,11 +53,15 @@ module TestDiff
       YAML::Store.new(storage_file).transaction(true) do |store|
         found_files = files & store.roots
         found_files.each do |file|
-          unless store[file].to_s.split(',').delete_if { |s| s == '' || s == '0' }.empty?
+          if _active_file?(store[file])
             results << storage_file.gsub('.yml', '').gsub("#{@folder}/", '')
           end
         end
       end
+    end
+
+    def _active_file?(file)
+      !file.to_s.split(',').delete_if { |s| s == '' || s == '0' }.empty?
     end
 
     def get_store(file)

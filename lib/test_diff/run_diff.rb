@@ -51,9 +51,16 @@ module TestDiff
     end
 
     def add_changed_files
-      cmd = "git diff --name-only #{sha1} HEAD"
+      _build_specs_to_run
+
+      @specs_to_run.flatten!
+      @specs_to_run.sort!
+      @specs_to_run.uniq!
+    end
+
+    def _build_specs_to_run
       files = []
-      `#{cmd}`.split("\n").each do |file_name|
+      `git diff --name-only #{sha1} HEAD`.split("\n").each do |file_name|
         if file_name.end_with?('spec.rb') || file_name.end_with?('test.rb')
           @specs_to_run << file_name
         elsif !file_name.start_with?(@storage.folder)
@@ -62,10 +69,6 @@ module TestDiff
         end
       end
       _add_calculated_tests(files)
-
-      @specs_to_run.flatten!
-      @specs_to_run.sort!
-      @specs_to_run.uniq!
     end
 
     def _add_calculated_tests(files)
