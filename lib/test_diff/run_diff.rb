@@ -35,7 +35,7 @@ module TestDiff
     def select_test_group
       return unless groups_of
       groups_size = (@specs_to_run.length / groups_of.to_f).ceil
-      @specs_to_run = @specs_to_run.slice(group.to_i * groups_size, groups_size)
+      @specs_to_run = @specs_to_run.slice(group.to_i * groups_size, groups_size) || []
     end
 
     def remove_tests_that_do_not_exist

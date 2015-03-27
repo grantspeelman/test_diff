@@ -20,6 +20,11 @@ class TestDiffBuilder < Thor
   def run_spec_diff(spec_folder = 'spec', groups_of = nil, group = '0')
     TestDiff::RunDiff.new(spec_folder, groups_of, group).run
   end
+
+  desc 'build_coverage_diff spec master', 'runs the specs difference between the branches'
+  def build_coverage_diff(spec_folder = 'spec', pre_load = nil, continue = nil)
+    TestDiff::BuildCoverageDiff.new(spec_folder, pre_load, continue).run
+  end
 end
 
 TestDiffBuilder.start(ARGV)
