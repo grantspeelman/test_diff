@@ -24,10 +24,13 @@ Or install it yourself as:
 Building the test coverage index
 
     $ bundle exec test_diff build_coverage spec spec/spec_helper.rb
+    $ bundle exec test_diff track_build
     $ git add test_diff_coverage
     $ git commit
 
+Running a test difference
 
+    $ bundle exec test_diff run_spec_diff
 
 ## Development
 
