@@ -17,8 +17,8 @@ class TestDiffBuilder < Thor
   end
 
   desc 'run_spec_diff spec master', 'runs the specs difference between the branches'
-  def run_spec_diff(spec_folder = 'spec', sha1 = nil, groups_of = nil, group = '0')
-    TestDiff::RunDiff.new(spec_folder, sha1, groups_of, group).run
+  def run_spec_diff(spec_folder = 'spec', groups_of = nil, group = '0')
+    TestDiff::RunDiff.new(spec_folder, groups_of, group).run
   end
 end
 

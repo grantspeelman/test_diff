@@ -4,9 +4,9 @@ module TestDiff
   class RunDiff
     attr_reader :spec_folder, :sha1, :groups_of, :group
 
-    def initialize(spec_folder, sha1, groups_of, group)
+    def initialize(spec_folder, groups_of, group)
       @spec_folder = spec_folder
-      @sha1 = sha1 ||  File.read('test_diff_coverage/sha')
+      @sha1 = File.read('test_diff_coverage/sha')
       @specs_to_run = []
       @storage = Storage.new
       @groups_of = groups_of
