@@ -7,14 +7,14 @@ module TestDiff
     def initialize(spec_folder, pre_load, continue)
       @spec_folder = spec_folder
       @sha1 = File.read('test_diff_coverage/sha')
-      @specs_to_run = []
+      @tests_to_run = []
       @storage = Storage.new
       @pre_load = pre_load
       @continue = continue
     end
 
     def run
-      add_changed_files
+      RunableTests.new(@tests_to_run, @spec_folder).add_changed_files
       remove_tests_that_do_not_exist
       remove_tests_in_wrong_folder
       require 'coverage.so'
@@ -32,9 +32,8 @@ module TestDiff
     end
 
     def run_batch
-      puts "Running #{@specs_to_run.size} tests"
-      require 'spec'
-      timing_thread = start_timing_thread(Time.now, @specs_to_run.size)
+      puts "Running #{@tests_to_run.size} tests"
+      timing_thread = start_timing_thread(Time.now, @tests_to_run.size)
       start
       timing_thread.join
       puts 'Test done, compacting db'
@@ -43,8 +42,8 @@ module TestDiff
 
     def start_timing_thread(start_time, original_size)
       Thread.new do
-        until @specs_to_run.empty?
-          last_size = @specs_to_run.size
+        until @tests_to_run.empty?
+          last_size = @tests_to_run.size
           completed = original_size - last_size
           if completed > 0
             time_per_spec = (Time.now - start_time).to_f / completed.to_f
@@ -57,8 +56,8 @@ module TestDiff
     end
 
     def start
-      until @specs_to_run.empty?
-        pid = start_process_fork(@specs_to_run.pop)
+      until @tests_to_run.empty?
+        pid = start_process_fork(@tests_to_run.pop)
         pid, status =  Process.waitpid2(pid)
         fail 'Test Failed' unless status.success?
       end
@@ -105,48 +104,15 @@ module TestDiff
     end
 
     def remove_tests_that_do_not_exist
-      @specs_to_run.delete_if do |s|
+      @tests_to_run.delete_if do |s|
         !File.exist?(s)
       end
     end
 
     def remove_tests_in_wrong_folder
-      @specs_to_run.delete_if do |s|
+      @tests_to_run.delete_if do |s|
         !s.start_with?("#{spec_folder}/")
       end
-    end
-
-    def add_changed_files
-      _build_specs_to_run
-
-      @specs_to_run.flatten!
-      @specs_to_run.sort!
-      @specs_to_run.uniq!
-    end
-
-    def _build_specs_to_run
-      files = []
-      `git diff --name-only #{sha1} HEAD`.split("\n").each do |file_name|
-        if file_name.end_with?('spec.rb') || file_name.end_with?('test.rb')
-          @specs_to_run << file_name
-        elsif !file_name.start_with?(@storage.folder)
-          files << file_name
-          _add_rails_view_spec(file_name)
-        end
-      end
-      _add_calculated_tests(files)
-    end
-
-    def _add_calculated_tests(files)
-      @specs_to_run << @storage.find_for(files, spec_folder)
-    end
-
-    def _add_rails_view_spec(file_name)
-      # try and find a matching view spec
-      return unless file_name.include?('app/views')
-      view_spec_name = file_name.gsub('app/views', "#{spec_folder}/views").gsub('.erb', '.erb_spec.rb')
-      return unless  File.exist?(view_spec_name)
-      @specs_to_run << view_spec_name
     end
   end
 end

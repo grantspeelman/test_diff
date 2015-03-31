@@ -5,7 +5,7 @@ RuboCop::RakeTask.new
 
 require 'rake/testtask'
 Rake::TestTask.new do |t|
-  t.pattern = 'test/**/*_spec.rb'
+  t.pattern = 'test/**/*_test.rb'
 end
 
-task default: %w(test build rubocop)
+task default: %w(rubocop test build)

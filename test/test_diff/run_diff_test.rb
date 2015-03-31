@@ -2,10 +2,16 @@ require File.expand_path '../../test_helper.rb', __FILE__
 
 # dummy runner
 class DummyRunner
-  attr_reader :run_tests_value
+  def initialize
+    @run_tests_values = []
+  end
+
+  def run_tests_value
+    @run_tests_values.last
+  end
 
   def run_tests(t)
-    @run_tests_value = t
+    @run_tests_values << t
   end
 end
 
@@ -19,10 +25,11 @@ class DummyStorage
   attr_accessor :select_tests
 
   def select_tests_for(*)
-    select_tests
+    select_tests || []
   end
 
-  def test_info_for(_file)
+  def test_info_for(file)
+    TestDiff::TestInfo.new(file, nil)
   end
 end
 
@@ -35,6 +42,7 @@ describe TestDiff::RunDiff do
     config.test_pattern = /mtest.rb\z/
     config.test_runner = DummyRunner.new
     config.version_control = DummyVersionControl.new
+    config.storage = DummyStorage.new
   end
 
   describe '#run' do
@@ -56,6 +64,15 @@ describe TestDiff::RunDiff do
       runner.run
       config.test_runner.run_tests_value.must_equal(
         ['tests/example_mtest.rb']
+      )
+    end
+
+    it 'runs matching view specs' do
+      runner = subject.new('tests', nil, nil)
+      config.version_control.changed_files = ['app/views/example.erb']
+      runner.run
+      config.test_runner.run_tests_value.must_equal(
+        ['tests/views/example.erb_spec.rb']
       )
     end
   end

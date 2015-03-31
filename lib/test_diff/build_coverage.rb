@@ -10,15 +10,7 @@ module TestDiff
       @batch_queue = Queue.new
       @storage = Storage.new
       @continue = continue
-      if File.file?(spec_folder)
-        @batch_queue << spec_folder
-      else
-        Dir["#{spec_folder}/**/*_spec.rb"].each do |spec_name|
-          if !continue || @storage.get(spec_name).empty?
-            @batch_queue << spec_name
-          end
-        end
-      end
+      RunableTests.add_all(@batch_queue, continue)
     end
 
     def run
@@ -74,16 +66,18 @@ module TestDiff
         puts "running #{main_spec_file}"
         ActiveRecord::Base.connection.reconnect! if defined?(ActiveRecord::Base)
         Time.zone_default = (Time.zone = 'UTC') if Time.respond_to?(:zone_default) && Time.zone_default.nil?
-        # ARGV = ['-b',main_spec_file]
-        s = Time.now
-        result = run_tests(main_spec_file)
-        if result
-          save_coverage_data(main_spec_file, Time.now - s)
-        else
-          Coverage.result # disable coverage
-          exit!(false) unless @continue
-        end
-        # ::Spec::Runner::CommandLine.run(options)
+        run_test(main_spec_file)
+      end
+    end
+
+    def run_test(main_spec_file)
+      s = Time.now
+      result = run_tests(main_spec_file)
+      if result
+        save_coverage_data(main_spec_file, Time.now - s)
+      else
+        Coverage.result # disable coverage
+        exit!(false) unless @continue
       end
     end
 

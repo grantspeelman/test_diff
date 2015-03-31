@@ -7,7 +7,7 @@ module TestDiff
     class Rspec
       def run_tests(specs)
         if specs.any?
-          puts "bundle exec rspec #{specs.join(' ')}"
+          STDERR.puts "bundle exec rspec #{specs.join(' ')}"
           exec "bundle exec rspec #{specs.join(' ')}"
         else
           puts 'no specs found to run'

@@ -12,7 +12,7 @@ module TestDiff
     end
 
     def run
-      add_changed_files
+      RunableTests.new(@tests_to_run, @tests_folder).add_changed_files
       remove_tests_that_do_not_exist
       remove_tests_in_wrong_folder
       select_test_group
@@ -27,8 +27,11 @@ module TestDiff
 
     def select_test_group
       return unless groups_of
-      groups_size = (@tests_to_run.length / groups_of.to_f).ceil
-      @tests_to_run = @tests_to_run.slice(group.to_i * groups_size, groups_size) || []
+      new_set_of_tests_to_run = []
+      @tests_to_run.each_with_index do |test, i|
+        new_set_of_tests_to_run << test if i % groups_of.to_i == group.to_i
+      end
+      @tests_to_run = new_set_of_tests_to_run
     end
 
     def remove_tests_that_do_not_exist
@@ -41,39 +44,6 @@ module TestDiff
       @tests_to_run.delete_if do |s|
         !s.filename.start_with?("#{tests_folder}/")
       end
-    end
-
-    def add_changed_files
-      _build_tests_to_run
-
-      @tests_to_run.flatten!
-      @tests_to_run.sort!
-      @tests_to_run.uniq!
-    end
-
-    def _build_tests_to_run
-      files = []
-      Config.version_control.changed_files.each do |file_name|
-        if Config.test_pattern.match(file_name)
-          @tests_to_run << Config.storage.test_info_for(file_name)
-        elsif !file_name.start_with?(@tests_folder)
-          files << file_name
-          _add_rails_view_spec(file_name)
-        end
-      end
-      _add_calculated_tests(files)
-    end
-
-    def _add_calculated_tests(files)
-      @tests_to_run << Config.storage.select_tests_for(files, tests_folder)
-    end
-
-    def _add_rails_view_spec(file_name)
-      # try and find a matching view spec
-      return unless file_name.include?('app/views')
-      view_spec_name = file_name.gsub('app/views', "#{tests_folder}/views").gsub('.erb', '.erb_spec.rb')
-      return unless  File.exist?(view_spec_name)
-      @tests_to_run << view_spec_name
     end
   end
 end
