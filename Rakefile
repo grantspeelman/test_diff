@@ -8,4 +8,4 @@ Rake::TestTask.new do |t|
   t.pattern = 'test/**/*_spec.rb'
 end
 
-task default: %w(rubocop test build)
+task default: %w(test build rubocop)

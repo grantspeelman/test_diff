@@ -41,6 +41,27 @@ module TestDiff
       results
     end
 
+    def select_tests_for(files, sub_folder = nil)
+      results = []
+      root_folder = @folder
+      root_folder += "/#{sub_folder}" if sub_folder
+      Dir["#{root_folder}/**/*.yml"].each do |storage_file|
+        select_tests_for_storage_file(results, storage_file, files)
+      end
+      results
+    end
+
+    def test_info_for(file)
+      result = TestInfo.new(file, nil)
+      YAML::Store.new("#{file}.yml").transaction(true) do |store|
+        result = TestInfo.new(file, store['__execution_time__'])
+      end
+      result
+    rescue PStore::Error => e
+      STDERR.puts e.message
+      result
+    end
+
     def clear
       Dir["#{@folder}/**/*.yml"].each do |storage_file|
         File.delete(storage_file)
@@ -56,6 +77,19 @@ module TestDiff
           if _active_file?(store[file])
             results << storage_file.gsub('.yml', '').gsub("#{@folder}/", '')
           end
+        end
+      end
+    end
+
+    def select_tests_for_storage_file(results, storage_file, files)
+      YAML::Store.new(storage_file).transaction(true) do |store|
+        found_files = files & store.roots
+        found_files.each do |file|
+          next unless _active_file?(store[file])
+          results << TestInfo.new(
+            storage_file.gsub('.yml', '').gsub("#{@folder}/", ''),
+            store['__execution_time__']
+          )
         end
       end
     end
