@@ -74,7 +74,7 @@ describe TestDiff::Storage do
 
   describe 'select_tests_for' do
     def get_map_results(*args)
-      subject.select_tests_for(*args).map do |r|
+      subject.select_tests_for(*args).sort.map do |r|
         { execution_time: r.execution_time,
           filename: r.filename }
       end
