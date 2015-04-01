@@ -57,7 +57,7 @@ module TestDiff
 
     def start
       until @tests_to_run.empty?
-        pid = start_process_fork(@tests_to_run.pop)
+        pid = start_process_fork(@tests_to_run.pop.filename)
         pid, status =  Process.waitpid2(pid)
         fail 'Test Failed' unless status.success?
       end
@@ -69,29 +69,37 @@ module TestDiff
         puts "running #{main_spec_file}"
         ActiveRecord::Base.connection.reconnect! if defined?(ActiveRecord::Base)
         Time.zone_default = (Time.zone = 'UTC') if Time.respond_to?(:zone_default) && Time.zone_default.nil?
-        # ARGV = ['-b',main_spec_file]
-        if run_tests(main_spec_file)
-          save_coverage_data(main_spec_file)
-        else
-          Coverage.result # disable coverage
-          exit!(false) unless @continue
-        end
-        # ::Spec::Runner::CommandLine.run(options)
+        run_test(main_spec_file)
+      end
+    end
+
+    def run_test(main_spec_file)
+      s = Time.now
+      result = run_tests(main_spec_file)
+      if result
+        save_coverage_data(main_spec_file, Time.now - s)
+      else
+        Coverage.result # disable coverage
+        exit!(false) unless @continue
       end
     end
 
     def run_tests(main_spec_file)
-      options ||= begin
-        parser = ::Spec::Runner::OptionParser.new($stderr, $stdout)
-        parser.order!(['-b', main_spec_file])
-        parser.options
+      if defined?(::RSpec::Core::Runner)
+        ::RSpec::Core::Runner.run([main_spec_file], $stderr, $stdout) == 0
+      else
+        options ||= begin
+          parser = ::Spec::Runner::OptionParser.new($stderr, $stdout)
+          parser.order!(['-b', main_spec_file])
+          parser.options
+        end
+        Spec::Runner.use options
+        options.run_examples
       end
-      Spec::Runner.use options
-      options.run_examples
     end
 
-    def save_coverage_data(main_spec_file)
-      data = {}
+    def save_coverage_data(main_spec_file, execution_time)
+      data = { '__execution_time__' => execution_time }
       Coverage.result.each do |file_name, stats|
         relative_file_name = file_name.gsub("#{FileUtils.pwd}/", '')
         if file_name.include?(FileUtils.pwd)
@@ -105,13 +113,13 @@ module TestDiff
 
     def remove_tests_that_do_not_exist
       @tests_to_run.delete_if do |s|
-        !File.exist?(s)
+        !File.exist?("#{Config.working_directory}/#{s.filename}")
       end
     end
 
     def remove_tests_in_wrong_folder
       @tests_to_run.delete_if do |s|
-        !s.start_with?("#{spec_folder}/")
+        !s.filename.start_with?("#{spec_folder}/")
       end
     end
   end
