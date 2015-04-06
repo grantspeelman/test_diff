@@ -10,7 +10,7 @@ module TestDiff
       @batch_queue = Queue.new
       @storage = Storage.new
       @continue = continue
-      RunableTests.add_all(@batch_queue, continue)
+      RunableTests.add_all(spec_folder, @batch_queue, continue)
     end
 
     def run

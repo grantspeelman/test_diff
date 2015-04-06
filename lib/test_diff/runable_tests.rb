@@ -2,7 +2,7 @@
 module TestDiff
   # class used to find tests that are runable
   class RunableTests
-    def self.add_all(list, continue = false)
+    def self.add_all(spec_folder, list, continue = false)
       if File.file?(spec_folder)
         list << spec_folder
       else

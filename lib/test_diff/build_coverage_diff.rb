@@ -33,26 +33,9 @@ module TestDiff
 
     def run_batch
       puts "Running #{@tests_to_run.size} tests"
-      timing_thread = start_timing_thread(Time.now, @tests_to_run.size)
       start
-      timing_thread.join
       puts 'Test done, compacting db'
       @storage.compact if @storage.respond_to?(:compact)
-    end
-
-    def start_timing_thread(start_time, original_size)
-      Thread.new do
-        until @tests_to_run.empty?
-          last_size = @tests_to_run.size
-          completed = original_size - last_size
-          if completed > 0
-            time_per_spec = (Time.now - start_time).to_f / completed.to_f
-            est_time_left = time_per_spec * last_size
-            puts "specs left #{last_size}, est time_left: #{est_time_left.to_i}"
-          end
-          sleep(60)
-        end
-      end
     end
 
     def start

@@ -1,4 +1,3 @@
-require 'git'
 # TestDiff module
 module TestDiff
   # module for test runners
