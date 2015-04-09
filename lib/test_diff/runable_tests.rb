@@ -25,7 +25,7 @@ module TestDiff
 
       @tests_to_run.flatten!
       @tests_to_run.sort!
-      @tests_to_run.uniq!
+      @tests_to_run.uniq!{ |s| s.filename }
     end
 
     def _build_tests_to_run
