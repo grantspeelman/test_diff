@@ -1,5 +1,7 @@
 require 'spec_helper'
 
 describe Purchase do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe 'create' do
+    it { Purchase.create!(amount: 100, tracking_id: 1) }
+  end
 end
