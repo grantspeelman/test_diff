@@ -14,10 +14,12 @@ module TestDiff
     end
 
     def run
-      require 'coverage.so'
-      Coverage.start
-      require_pre_load
-      run_batch
+      Dir.chdir("#{spec_folder}/..") do
+        require 'coverage.so'
+        Coverage.start
+        require_pre_load
+        run_batch
+      end
     end
 
     private
@@ -103,7 +105,6 @@ module TestDiff
           data[relative_file_name] = stats.join(',')
         end
       end
-      YAML::ENGINE.yamler = 'psych'
       @storage.set(main_spec_file, data)
       @storage.flush if @storage.respond_to?(:flush)
     end
