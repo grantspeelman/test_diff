@@ -1,3 +1,7 @@
+AllCops:
+  Exclude:
+    - 'test/fixture/**/*'
+
 Metrics/LineLength:
   Max: 120
 

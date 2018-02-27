@@ -1,3 +1,4 @@
+/.idea
 /.bundle/
 /.yardoc
 /Gemfile.lock
@@ -7,3 +8,6 @@
 /pkg/
 /spec/reports/
 /tmp/
+/test/fixture/**/*.log
+/test/fixture/**/test_diff_coverage
+
