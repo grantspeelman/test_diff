@@ -8,4 +8,6 @@ rvm:
   - 2.4
   - jruby-9
 
-script: rake
+script:
+  - cd test/fixture/rspec_2_rails_3_2 && bundle install && bundle exec test_diff build_coverage spec spec/spec_helper.rb
+  - bundle exec rake

@@ -10,13 +10,8 @@ describe 'Rspec 2 & Rails 3.2' do
     end
   end
 
-  describe '#run' do
-    it 'runs the tests that match test_pattern' do
-      Dir.chdir('test/fixture/rspec_2_rails_3_2') do
-        assert system('bundle install')
-        assert system('bundle exec test_diff build_coverage spec spec/spec_helper.rb')
-      end
-
+  describe 'Results' do
+    it 'checking results' do
       test_trapper = TestTrapper.new
       TestDiff::Config.test_runner = test_trapper
     end
