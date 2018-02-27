@@ -1,3 +1,3 @@
 class Post < ActiveRecord::Base
-  # test_change
+  # test change
 end
