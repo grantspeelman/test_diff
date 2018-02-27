@@ -57,7 +57,7 @@ module TestDiff
     def start
       until @batch_queue.empty?
         pid = start_process_fork(@batch_queue.pop(true))
-        pid, status =  Process.waitpid2(pid)
+        _pid, status =  Process.waitpid2(pid)
         fail 'Test Failed' unless status.success?
       end
       Coverage.result # disable coverage
@@ -78,6 +78,7 @@ module TestDiff
       if result
         save_coverage_data(main_spec_file, Time.now - s)
       else
+        $stderr.puts(@last_output.to_s)
         Coverage.result # disable coverage
         exit!(false) unless @continue
       end
@@ -85,7 +86,8 @@ module TestDiff
 
     def run_tests(main_spec_file)
       if defined?(::RSpec::Core::Runner)
-        ::RSpec::Core::Runner.run([main_spec_file], $stderr, $stdout) == 0
+        @last_output = StringIO.new
+        ::RSpec::Core::Runner.run([main_spec_file], @last_output, @last_output) == 0
       else
         options ||= begin
           parser = ::Spec::Runner::OptionParser.new($stderr, $stdout)
