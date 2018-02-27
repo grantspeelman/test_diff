@@ -12,7 +12,7 @@ def in_memory_database?
 end
 
 if in_memory_database?
-  puts "creating sqlite in memory database"
+  Rails.logger.info "creating sqlite in memory database"
   silence_stream(STDOUT) do
     load "#{Rails.root}/db/schema.rb"
   end
