@@ -34,7 +34,7 @@ module TestDiff
       puts "Running #{@batch_queue.size} tests"
       timing_thread = start_timing_thread(Time.now, @batch_queue.size)
       start
-      timing_thread.join
+      timing_thread.kill
       puts 'Test done, compacting db'
       @storage.compact if @storage.respond_to?(:compact)
     end
