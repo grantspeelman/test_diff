@@ -1,4 +1,4 @@
 # version number
 module TestDiff
-  VERSION = '0.3.4'.freeze
+  VERSION = '0.4.0.alpha'.freeze
 end

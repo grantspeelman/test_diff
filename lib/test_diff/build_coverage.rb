@@ -17,7 +17,7 @@ module TestDiff
       Dir.chdir("#{spec_folder}/..") do
         require 'coverage.so'
         Coverage.start
-        ENV['TEST_DIFF_COVERAGE'] = 'yes'
+
         require_pre_load
         run_batch
       end
@@ -66,6 +66,7 @@ module TestDiff
 
     def start_process_fork(main_spec_file)
       Process.fork do
+        ENV['TEST_DIFF_COVERAGE'] = 'yes'
         puts "running #{main_spec_file}"
         ActiveRecord::Base.connection.reconnect! if defined?(ActiveRecord::Base)
         Time.zone_default = (Time.zone = 'UTC') if Time.respond_to?(:zone_default) && Time.zone_default.nil?
