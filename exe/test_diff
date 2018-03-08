@@ -12,8 +12,8 @@ class TestDiffBuilder < Thor
   end
 
   desc 'track build', 'track this HEAD as the last test diff index'
-  def track_build(sha1 = nil)
-    TestDiff::TrackBuild.new(sha1).run
+  def track_build(git_dir = nil, sha1 = nil)
+    TestDiff::TrackBuild.new(sha1, git_dir).run
   end
 
   desc 'run_spec_diff spec', 'runs the specs difference between the branches'

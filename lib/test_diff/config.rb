@@ -10,10 +10,17 @@ module TestDiff
     attr_writer :test_runner, :version_control, :storage
 
     def initialize
+      reset
+    end
+
+    def reset
       self.working_directory = '.'
       self.map_subfolder = 'test_diff_coverage'
       self.current_tracking_filename = 'sha'
       self.test_pattern = /spec.rb\z/
+      @version_control = nil
+      @storage = nil
+      @test_runner = nil
     end
 
     def version_control

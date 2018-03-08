@@ -17,6 +17,7 @@ module TestDiff
       Dir.chdir("#{spec_folder}/..") do
         require 'coverage.so'
         Coverage.start
+        ENV['TEST_DIFF_COVERAGE'] = 'yes'
         require_pre_load
         run_batch
       end

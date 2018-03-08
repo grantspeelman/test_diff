@@ -8,16 +8,32 @@ Gem that attempts to find the tests that are required to run for the changes you
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'test_diff'
+gem 'test_diff', group: :test
 ```
 
 And then execute:
 
     $ bundle
 
-Or install it yourself as:
+## Setup
 
-    $ gem install test_diff
+Disable `cache_classes` and `eager_load` in `config/environments/test.rb` based on `ENV['TEST_DIFF_COVERAGE']`
+EG:
+
+```ruby
+config.cache_classes = ENV['TEST_DIFF_COVERAGE'].blank?
+config.eager_load = ENV['TEST_DIFF_COVERAGE'].blank?
+```
+
+Also make sure to disable `simple_cov` if you use it when `ENV['TEST_DIFF_COVERAGE']` is set
+EG:
+
+```ruby
+unless ENV['TEST_DIFF_COVERAGE']
+  require 'simplecov'
+  SimpleCov.start 'rails'
+end
+```
 
 ## Usage
 
