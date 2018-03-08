@@ -41,8 +41,8 @@ module TestDiff
     def start
       until @tests_to_run.empty?
         pid = start_process_fork(@tests_to_run.pop.filename)
-        pid, status =  Process.waitpid2(pid)
-        fail 'Test Failed' unless status.success?
+        pid, status = Process.waitpid2(pid)
+        raise 'Test Failed' unless status.success?
       end
       Coverage.result # disable coverage
     end
@@ -69,7 +69,7 @@ module TestDiff
 
     def run_tests(main_spec_file)
       if defined?(::RSpec::Core::Runner)
-        ::RSpec::Core::Runner.run([main_spec_file], $stderr, $stdout) == 0
+        ::RSpec::Core::Runner.run([main_spec_file], $stderr, $stdout).zero?
       else
         options ||= begin
           parser = ::Spec::Runner::OptionParser.new($stderr, $stdout)

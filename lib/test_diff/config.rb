@@ -51,5 +51,9 @@ module TestDiff
         super
       end
     end
+
+    def self.respond_to_missing?(method, *args)
+      super && instance.respond_to?(method)
+    end
   end
 end

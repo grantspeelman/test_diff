@@ -10,7 +10,7 @@ module TestDiff
     end
 
     def set(file, coverage_data)
-      fail 'Data must be a Hash' unless coverage_data.is_a?(Hash)
+      raise 'Data must be a Hash' unless coverage_data.is_a?(Hash)
       get_store(file).transaction do |store|
         store.roots.each do |key|
           store.delete(key)
