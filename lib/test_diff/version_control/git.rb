@@ -14,7 +14,7 @@ module TestDiff
       end
 
       def changed_files
-        (diff_changed_files + unstaged_changed_files).uniq
+        (unstaged_changed_files + diff_changed_files).uniq
       end
 
       private
@@ -27,7 +27,7 @@ module TestDiff
 
       def unstaged_changed_files
         @git.status.select { |sf| %w[M A D].include?(sf.type) }.tap do |files|
-          log_debug "==unstaged_changed_files==\n #{files.map(&:inspect).join(',')}"
+          log_debug "==unstaged_changed_files==\n #{files.map{|f| "[#{f.type}](#{f.path})" }.join(',')}"
         end.map(&:path)
       end
     end
