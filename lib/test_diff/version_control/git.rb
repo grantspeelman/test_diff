@@ -12,8 +12,21 @@ module TestDiff
       end
 
       def changed_files
-        @git.diff(@last_tracked, @current).map(&:path) +
-          @git.status.select { |sf| %w[M A D].include?(sf.type) }.map(&:path)
+        (diff_changed_files + unstaged_changed_files).uniq
+      end
+
+      private
+
+      def diff_changed_files
+        @git.diff(@last_tracked, @current).map(&:path).tap do |files|
+          puts "diff_changed_files: #{files.join(',')}"
+        end
+      end
+
+      def unstaged_changed_files
+        @git.status.select { |sf| %w[M A D].include?(sf.type) }.map(&:path).tap do |files|
+          puts "unstaged_changed_files: #{files.join(',')}"
+        end
       end
     end
   end
