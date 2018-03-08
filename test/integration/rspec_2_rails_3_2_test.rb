@@ -10,8 +10,9 @@ describe 'Rspec 2 & Rails 3.2' do
     end
   end
 
-  describe 'Results', pending: true do
+  describe 'Results' do
     it 'checking results' do
+      skip
       TestDiff::Config.reset
 
       test_trapper = TestTrapper.new
