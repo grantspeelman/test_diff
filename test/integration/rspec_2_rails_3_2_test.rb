@@ -19,7 +19,8 @@ describe 'Rspec 2 & Rails 3.2' do
 
       Dir.chdir 'test/fixture/rspec_2_rails_3_2' do
         current_tracking_file = TestDiff::Config.current_tracking_file
-        TestDiff::Config.version_control = TestDiff::VersionControl::Git.new('../../../', File.read(current_tracking_file))
+        TestDiff::Config.version_control =
+          TestDiff::VersionControl::Git.new('../../../', File.read(current_tracking_file))
         TestDiff::RunDiff.new('spec', nil, '0').run
       end
 
