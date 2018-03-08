@@ -13,7 +13,7 @@ module TestDiff
 
       def changed_files
         @git.diff(@last_tracked, @current).map(&:path) +
-            @git.status.select{|sf| ['M','A','D'].include?(sf.type) }.map(&:path)
+          @git.status.select { |sf| %w[M A D].include?(sf.type) }.map(&:path)
       end
     end
   end
