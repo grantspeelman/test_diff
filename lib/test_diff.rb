@@ -1,5 +1,6 @@
 require 'test_diff/version'
 require 'test_diff/storage'
+require 'test_diff/logging'
 require 'test_diff/test_info'
 require 'test_diff/version_control/git'
 require 'test_diff/test_runner/rspec'

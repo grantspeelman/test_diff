@@ -21,6 +21,7 @@ module TestDiff
       @version_control = nil
       @storage = nil
       @test_runner = nil
+      @logger = nil
     end
 
     def version_control
@@ -34,6 +35,11 @@ module TestDiff
 
     def test_runner
       @test_runner ||= TestRunner::Rspec.new
+    end
+
+    def logger
+      require 'logger'
+      @logger ||= Logger.new($stdout)
     end
 
     def map_folder

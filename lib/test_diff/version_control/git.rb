@@ -5,6 +5,8 @@ module TestDiff
   module VersionControl
     # class to find changed files for git
     class Git
+      include Logging
+
       def initialize(wd, last_tracked, current = 'HEAD')
         @git = ::Git.open(wd)
         @last_tracked = last_tracked
@@ -19,13 +21,13 @@ module TestDiff
 
       def diff_changed_files
         @git.diff(@last_tracked, @current).map(&:path).tap do |files|
-          puts "diff_changed_files: #{files.join(',')}"
+          log_debug "diff_changed_files: #{files.join(',')}"
         end
       end
 
       def unstaged_changed_files
         @git.status.select { |sf| %w[M A D].include?(sf.type) }.map(&:path).tap do |files|
-          puts "unstaged_changed_files: #{files.join(',')}"
+          log_debug "unstaged_changed_files: #{files.join(',')}"
         end
       end
     end
