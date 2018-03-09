@@ -7,8 +7,19 @@ module TestDiff
     class Git
       include Logging
 
+      # log all git logger info on debug level
+      class AllDebugLogger < SimpleDelegator
+        def warning(*args)
+          debug(*args)
+        end
+
+        def info(*args)
+          debug(*args)
+        end
+      end
+
       def initialize(wd, last_tracked, current = 'HEAD')
-        @git = ::Git.open(wd, log: Config.logger)
+        @git = ::Git.open(wd, log: AllDebugLogger.new(Config.logger))
         @last_tracked = last_tracked
         @current = current
       end
