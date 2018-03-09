@@ -26,7 +26,7 @@ module TestDiff
       end
 
       def changed_files
-        (unstaged_changed_files + unstaged_added_files).uniq
+        (diff_changed_files + unstaged_added_files).uniq
       end
 
       private
