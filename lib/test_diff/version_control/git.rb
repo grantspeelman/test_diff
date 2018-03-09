@@ -8,13 +8,13 @@ module TestDiff
       include Logging
 
       def initialize(wd, last_tracked, current = 'HEAD')
-        @git = ::Git.open(wd)
+        @git = ::Git.open(wd, log: Config.logger)
         @last_tracked = last_tracked
         @current = current
       end
 
       def changed_files
-        (unstaged_changed_files + unstaged_added_files + diff_changed_files).uniq
+        (diff_changed_files + unstaged_changed_files).uniq
       end
 
       private
@@ -26,15 +26,9 @@ module TestDiff
       end
 
       def unstaged_changed_files
-        @git.status.changed.tap do |file_hash|
-          log_debug "unstaged_changed_files: #{file_hash.keys.join(',')}"
-        end.keys
-      end
-
-      def unstaged_added_files
-        @git.status.added.tap do |file_hash|
-          log_debug "unstaged_added_files: #{file_hash.keys.join(',')}"
-        end.keys
+        @git.status.select { |sf| %w[M A D].include?(sf.type) }.map(&:path).tap do |files|
+          log_debug "unstaged_changed_files: #{files.join(',')}"
+        end
       end
     end
   end
