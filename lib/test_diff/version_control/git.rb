@@ -26,7 +26,7 @@ module TestDiff
       end
 
       def unstaged_changed_files
-        @git.status.select { |sf| %w[M A D].include?(sf.type) }.map(&:path).tap do |files|
+        @git.status.select { |sf| %w[A D].include?(sf.type) }.map(&:path).tap do |files|
           log_debug "unstaged_changed_files: #{files.join(',')}"
         end
       end
