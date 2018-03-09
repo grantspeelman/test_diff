@@ -19,7 +19,8 @@ module TestDiff
       end
 
       def initialize(wd, last_tracked, current = 'HEAD')
-        @git = ::Git.open(wd, log: AllDebugLogger.new(Config.logger))
+        # @git = ::Git.open(wd, log: AllDebugLogger.new(Config.logger))
+        @git = ::Git.open(wd)
         @last_tracked = last_tracked
         @current = current
       end
