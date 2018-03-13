@@ -14,45 +14,40 @@ module TestDiff
     end
 
     def run
-      Dir.chdir("#{spec_folder}/..") do
-        require 'coverage.so'
-        Coverage.start
+      require 'coverage.so'
+      Coverage.start
 
-        require_pre_load
-        run_batch
-      end
+      require_boot
+      require_rspec
+      require_pre_load
+      run_batch
     end
 
     private
 
+    def require_boot
+      return unless File.exist?('config/boot.rb')
+      puts 'Loading config/boot.rb'
+      require File.expand_path('config/boot.rb')
+    end
+
     def require_pre_load
       return unless pre_load
       puts "pre_loading #{pre_load}"
+      $LOAD_PATH << "#{Dir.getwd}/spec"
       require File.expand_path(pre_load)
+    end
+
+    def require_rspec
+      puts 'Loading rspec'
+      require 'rspec'
     end
 
     def run_batch
       puts "Running #{@batch_queue.size} tests"
-      timing_thread = start_timing_thread(Time.now, @batch_queue.size)
-      start
-      timing_thread.kill
+      TimingTracker.run(@batch_queue) { start }
       puts 'Test done, compacting db'
       @storage.compact if @storage.respond_to?(:compact)
-    end
-
-    def start_timing_thread(start_time, original_size)
-      Thread.new do
-        until @batch_queue.empty?
-          last_size = @batch_queue.size
-          completed = original_size - last_size
-          if completed > 0
-            time_per_spec = (Time.now - start_time).to_f / completed.to_f
-            est_time_left = time_per_spec * last_size
-            puts "specs left #{last_size}, est time_left: #{est_time_left.to_i}"
-          end
-          sleep(60)
-        end
-      end
     end
 
     def start
@@ -87,18 +82,8 @@ module TestDiff
     end
 
     def run_tests(main_spec_file)
-      if defined?(::RSpec::Core::Runner)
-        @last_output = StringIO.new
-        ::RSpec::Core::Runner.run([main_spec_file], @last_output, @last_output).zero?
-      else
-        options ||= begin
-          parser = ::Spec::Runner::OptionParser.new($stderr, $stdout)
-          parser.order!(['-b', main_spec_file])
-          parser.options
-        end
-        Spec::Runner.use options
-        options.run_examples
-      end
+      @last_output = StringIO.new
+      ::RSpec::Core::Runner.run([main_spec_file], @last_output, @last_output).zero?
     end
 
     def save_coverage_data(main_spec_file, execution_time)
@@ -111,6 +96,58 @@ module TestDiff
       end
       @storage.set(main_spec_file, data)
       @storage.flush if @storage.respond_to?(:flush)
+    end
+  end
+
+  # estimates and prints how long it will take to empty a queue
+  class TimingTracker
+    def self.run(queue, &block)
+      new(queue).run(&block)
+    end
+
+    def initialize(queue)
+      @queue = queue
+      @original_size = queue_size
+    end
+
+    def run
+      @start_time = Time.now
+      thread = start_timing_thread
+      yield
+      thread.kill
+    end
+
+    private
+
+    def queue_size
+      @queue.size
+    end
+
+    def queue_completed
+      @original_size - queue_size
+    end
+
+    def seconds_elapsed
+      (Time.now - @start_time).to_f
+    end
+
+    def start_timing_thread
+      Thread.new do
+        until queue_empty?
+          current_size = queue_size
+          current_completed = queue_completed
+          if current_completed > 0
+            time_per_spec = seconds_elapsed / current_completed.to_f
+            est_time_left = time_per_spec * current_size
+            puts "specs left #{current_size}, est time_left: #{est_time_left.to_i}"
+          end
+          sleep(60)
+        end
+      end
+    end
+
+    def queue_empty?
+      @batch_queue.empty?
     end
   end
 end
