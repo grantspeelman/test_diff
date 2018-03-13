@@ -1,7 +1,9 @@
 # TestDiff
 [![Build Status](https://travis-ci.org/grantspeelman/test_diff.svg?branch=master)](https://travis-ci.org/grantspeelman/test_diff)
 
-Gem that attempts to find the tests that are required to run for the changes you have made
+Gem that attempts to find the tests that are required to run for the changes you have made.
+
+* Supports RSpec 2+
 
 ## Installation
 
@@ -15,13 +17,12 @@ And then execute:
 
     $ bundle
 
-## Setup
+## Rails Setup
 
-Disable `cache_classes` and `eager_load` in `config/environments/test.rb` based on `ENV['TEST_DIFF_COVERAGE']`
+Suggest to disabled `eager_load` in `config/environments/test.rb` based on `ENV['TEST_DIFF_COVERAGE']`
 EG:
 
 ```ruby
-config.cache_classes = ENV['TEST_DIFF_COVERAGE'].blank?
 config.eager_load = ENV['TEST_DIFF_COVERAGE'].blank?
 ```
 
