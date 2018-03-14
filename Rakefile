@@ -8,7 +8,4 @@ Rake::TestTask.new do |t|
   t.pattern = 'test/**/*_test.rb'
 end
 
-require 'rspec/core/rake_task'
-RSpec::Core::RakeTask.new(:spec)
-
-task default: %w[rubocop test spec build]
+task default: %w[rubocop test build]
