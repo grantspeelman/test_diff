@@ -10,7 +10,7 @@ module TestDiff
     end
 
     def run
-      RunableTests.add_all(spec_folder, @batch_queue, continue)
+      RunableTests.add_all(@spec_folder, @batch_queue, @continue)
       CoverageRunner.run(@batch_queue, @pre_load, @continue)
     end
   end
