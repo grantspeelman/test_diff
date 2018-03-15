@@ -11,3 +11,6 @@ Metrics/MethodLength:
 Metrics/BlockLength:
   Exclude:
     - 'test/**/*'
+
+Style/PercentLiteralDelimiters:
+  Enabled: false

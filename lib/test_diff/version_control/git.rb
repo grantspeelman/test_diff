@@ -7,20 +7,8 @@ module TestDiff
     class Git
       include Logging
 
-      # log all git logger info on debug level
-      class AllDebugLogger < SimpleDelegator
-        def warning(*args)
-          debug(*args)
-        end
-
-        def info(*args)
-          debug(*args)
-        end
-      end
-
-      def initialize(wd, last_tracked, current = 'HEAD')
-        # @git = ::Git.open(wd, log: AllDebugLogger.new(Config.logger))
-        @git = ::Git.open(wd)
+      def initialize(wd, last_tracked, current = 'HEAD', git_lib = ::GIT)
+        @git = git_lib.open(wd)
         @last_tracked = last_tracked
         @current = current
       end
@@ -35,18 +23,6 @@ module TestDiff
         @git.diff(@last_tracked, @current).map(&:path).tap do |files|
           log_debug "diff_changed_files: #{files.join(',')}"
         end
-      end
-
-      def unstaged_changed_files
-        @git.status.changed.tap do |file_hash|
-          log_debug "unstaged_changed_files: #{file_hash.keys.join(',')}"
-        end.keys
-      end
-
-      def unstaged_added_files
-        @git.status.added.tap do |file_hash|
-          log_debug "unstaged_added_files: #{file_hash.keys.join(',')}"
-        end.keys
       end
     end
   end
