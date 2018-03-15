@@ -24,10 +24,6 @@ module TestDiff
       @queue.size
     end
 
-    def queue_completed
-      @original_size - queue_size
-    end
-
     def seconds_elapsed
       (Time.now - @start_time).to_f
     end
@@ -44,17 +40,18 @@ module TestDiff
 
     def do_timing
       puts "Timing #{@original_size} specs"
+      sleep_time = 30.0
       until queue_empty?
+        last_current_size = queue_size
+        sleep(sleep_time)
         current_size = queue_size
-        current_completed = queue_completed
-        if current_completed > 5
-          time_per_spec = seconds_elapsed / current_completed.to_f
-          est_time_left = time_per_spec * current_size
+        current_completed = last_current_size - current_size
+        if current_completed > 0
+          est_time_left = (sleep_time / current_completed.to_f) * current_size
           puts "specs left #{current_size}, est time_left: #{est_time_left.to_i}"
         else
           puts "specs left #{current_size}, est time_left: N/A"
         end
-        sleep(30)
       end
     end
 
