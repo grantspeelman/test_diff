@@ -47,10 +47,12 @@ module TestDiff
       until queue_empty?
         current_size = queue_size
         current_completed = queue_completed
-        if current_completed > 0
+        if current_completed > 5
           time_per_spec = seconds_elapsed / current_completed.to_f
           est_time_left = time_per_spec * current_size
           puts "specs left #{current_size}, est time_left: #{est_time_left.to_i}"
+        else
+          puts "specs left #{current_size}, est time_left: N/A"
         end
         sleep(30)
       end
