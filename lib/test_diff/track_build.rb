@@ -13,6 +13,7 @@ module TestDiff
       git = Git.open(@git_dir || '.')
       sha = git.object(@sha || 'HEAD').sha
       File.open('test_diff_coverage/sha', 'w+') { |f| f << sha }
+      puts 'updated test_diff_coverage/sha'
     end
   end
 end

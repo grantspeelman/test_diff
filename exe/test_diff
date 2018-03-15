@@ -9,6 +9,7 @@ class TestDiffBuilder < Thor
   desc 'build_coverage spec', 'runs the specs and generates reverse_coverage'
   def build_coverage(spec_folder = 'spec', pre_load = nil, continue = nil)
     TestDiff::BuildCoverage.new(spec_folder, pre_load, continue).run
+    track_build
   end
 
   desc 'track build', 'track this HEAD as the last test diff index'
@@ -16,20 +17,15 @@ class TestDiffBuilder < Thor
     TestDiff::TrackBuild.new(sha1, git_dir).run
   end
 
-  desc 'run_spec_diff spec', 'runs the specs difference between the branches'
-  def run_spec_diff(spec_folder = 'spec', groups_of = nil, group = '0')
-    TestDiff::Config.test_runner = TestDiff::TestRunner::Spec.new
-    TestDiff::RunDiff.new(spec_folder, groups_of, group).run
-  end
-
-  desc 'run_rspec_diff spec', 'runs the specs difference between the branches'
-  def run_rspec_diff(spec_folder = 'spec', groups_of = nil, group = '0')
+  desc 'rspec', 'runs the specs difference between the branches'
+  def rspec(spec_folder = 'spec', groups_of = nil, group = '0')
     TestDiff::RunDiff.new(spec_folder, groups_of, group).run
   end
 
   desc 'build_coverage_diff spec', 'runs the specs difference between the branches'
   def build_coverage_diff(spec_folder = 'spec', pre_load = nil, continue = nil)
     TestDiff::BuildCoverageDiff.new(spec_folder, pre_load, continue).run
+    track_build
   end
 end
 

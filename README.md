@@ -3,7 +3,10 @@
 
 Gem that attempts to find the tests that are required to run for the changes you have made.
 
-* Supports RSpec 2+
+## Project requirements
+
+* RSpec 2+
+* project tracked with git
 
 ## Installation
 
@@ -40,14 +43,13 @@ end
 
 Building the test coverage index
 
-    $ bundle exec test_diff build_coverage spec spec/spec_helper.rb
-    $ bundle exec test_diff track_build
-    $ git add test_diff_coverage
-    $ git commit
+    $ test_diff build_coverage spec spec/spec_helper.rb
+    $ # part here to upload test_diff_coverage to a shared space, ie aws
 
 Running a test difference
 
-    $ bundle exec test_diff run_spec_diff
+    $ # part here to download test_diff_coverage from shared space, ie aws
+    $ test_diff rspec
 
 ## Development
 
