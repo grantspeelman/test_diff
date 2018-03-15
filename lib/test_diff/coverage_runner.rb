@@ -19,6 +19,7 @@ module TestDiff
       require_boot
       require_rspec
       require_pre_load
+      pre_run_checks
       run_batch
     end
 
@@ -40,6 +41,10 @@ module TestDiff
     def require_rspec
       puts 'Loading rspec'
       require 'rspec'
+    end
+
+    def pre_run_checks
+      raise 'please disable simplecov while using test_diff. Check README.md for examples' if defined?(SimpleCov)
     end
 
     def run_batch

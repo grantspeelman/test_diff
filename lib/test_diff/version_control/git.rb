@@ -7,7 +7,7 @@ module TestDiff
     class Git
       include Logging
 
-      def initialize(wd, last_tracked, current = 'HEAD', git_lib = ::GIT)
+      def initialize(wd, last_tracked, current = 'HEAD', git_lib = ::Git)
         @git = git_lib.open(wd)
         @last_tracked = last_tracked
         @current = current
