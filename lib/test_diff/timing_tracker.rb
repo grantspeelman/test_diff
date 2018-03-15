@@ -34,22 +34,30 @@ module TestDiff
 
     def start_timing_thread
       Thread.new do
-        puts "Timing #{@original_size} specs"
-        until queue_empty?
-          current_size = queue_size
-          current_completed = queue_completed
-          if current_completed > 0
-            time_per_spec = seconds_elapsed / current_completed.to_f
-            est_time_left = time_per_spec * current_size
-            puts "specs left #{current_size}, est time_left: #{est_time_left.to_i}"
-          end
-          sleep(30)
+        begin
+          do_timing
+        rescue => e
+          puts "----- Timing failed: #{e.message} -----"
         end
-      end.run
+      end
+    end
+
+    def do_timing
+      puts "Timing #{@original_size} specs"
+      until queue_empty?
+        current_size = queue_size
+        current_completed = queue_completed
+        if current_completed > 0
+          time_per_spec = seconds_elapsed / current_completed.to_f
+          est_time_left = time_per_spec * current_size
+          puts "specs left #{current_size}, est time_left: #{est_time_left.to_i}"
+        end
+        sleep(30)
+      end
     end
 
     def queue_empty?
-      @batch_queue.empty?
+      @queue.empty?
     end
   end
 end
