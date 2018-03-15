@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.name          = 'test_diff'
   spec.version       = TestDiff::VERSION
   spec.authors       = ['Grant Speelman']
-  spec.email         = ['grant.speelman@ubxd.com']
+  spec.email         = ['grantspeelman@gmail.com']
 
   spec.summary       = 'Gem that attempts to find the tests that are required to run for the changes you have made.'
   spec.description   = 'Gem that attempts to find the tests that are required to run for the changes you have made.'
