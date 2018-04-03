@@ -6,10 +6,16 @@ require 'test_diff'
 
 # thor class to allow execution
 class TestDiffBuilder < Thor
-  desc 'build_coverage spec', 'runs the specs and generates reverse_coverage'
+  desc 'build_coverage spec', 'runs the specs and generates coverage index'
   method_option :spec_folder, desc: 'Folder where specs located', default: 'spec', type: :string, banner: 'spec'
-  def build_coverage(pre_load = nil, continue = nil)
-    TestDiff::BuildCoverage.new(options[:spec_folder], pre_load, continue).run
+  method_option :stop_on_failure, desc: 'Stop building coverage if spec fails', default: false, type: :boolean
+  method_option :only_missing, desc: 'build coverage for missing specs', default: false, type: :boolean
+  def build_coverage(pre_load = nil)
+    TestDiff::BuildCoverage.new(options[:spec_folder],
+                                pre_load,
+                                options[:stop_on_failure],
+                                options[:only_missing])
+                           .run
     track_build
   end
 
@@ -24,10 +30,11 @@ class TestDiffBuilder < Thor
     TestDiff::RunDiff.new(options[:spec_folder], groups_of, group).run
   end
 
-  desc 'build_coverage_diff spec', 'runs the specs difference between the branches'
+  desc 'build_coverage_diff spec', 'runs the specs difference and updates coverage index'
   method_option :spec_folder, desc: 'Folder where specs located', default: 'spec', type: :string, banner: 'spec'
-  def build_coverage_diff(pre_load = nil, continue = nil)
-    TestDiff::BuildCoverageDiff.new(options[:spec_folder], pre_load, continue).run
+  method_option :stop_on_failure, desc: 'Stop building coverage if spec fails', default: false, type: :boolean
+  def build_coverage_diff(pre_load = nil)
+    TestDiff::BuildCoverageDiff.new(options[:spec_folder], pre_load, options[:stop_on_failure]).run
     track_build
   end
 end
