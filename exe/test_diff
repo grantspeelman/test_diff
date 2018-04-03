@@ -7,8 +7,9 @@ require 'test_diff'
 # thor class to allow execution
 class TestDiffBuilder < Thor
   desc 'build_coverage spec', 'runs the specs and generates reverse_coverage'
-  def build_coverage(spec_folder = 'spec', pre_load = nil, continue = nil)
-    TestDiff::BuildCoverage.new(spec_folder, pre_load, continue).run
+  method_option :spec_folder, desc: 'Folder where specs located', default: 'spec', type: :string, banner: 'spec'
+  def build_coverage(pre_load = nil, continue = nil)
+    TestDiff::BuildCoverage.new(options[:spec_folder], pre_load, continue).run
     track_build
   end
 
@@ -18,13 +19,15 @@ class TestDiffBuilder < Thor
   end
 
   desc 'rspec', 'runs the specs difference between the branches'
-  def rspec(spec_folder = 'spec', groups_of = nil, group = '0')
-    TestDiff::RunDiff.new(spec_folder, groups_of, group).run
+  method_option :spec_folder, desc: 'Folder where specs located', default: 'spec', type: :string, banner: 'spec'
+  def rspec(groups_of = nil, group = '0')
+    TestDiff::RunDiff.new(options[:spec_folder], groups_of, group).run
   end
 
   desc 'build_coverage_diff spec', 'runs the specs difference between the branches'
-  def build_coverage_diff(spec_folder = 'spec', pre_load = nil, continue = nil)
-    TestDiff::BuildCoverageDiff.new(spec_folder, pre_load, continue).run
+  method_option :spec_folder, desc: 'Folder where specs located', default: 'spec', type: :string, banner: 'spec'
+  def build_coverage_diff(pre_load = nil, continue = nil)
+    TestDiff::BuildCoverageDiff.new(options[:spec_folder], pre_load, continue).run
     track_build
   end
 end

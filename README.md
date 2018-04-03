@@ -41,15 +41,27 @@ end
 
 ## Usage
 
-Building the test coverage index
+Building the test coverage index (run once a day on your main branch)
 
-    $ test_diff build_coverage spec spec/spec_helper.rb
+```bash
+    $ test_diff build_coverage spec/spec_helper.rb
     $ # part here to upload test_diff_coverage to a shared space, ie aws
+```
 
-Running a test difference
+Running a test difference (after commit on your separate branch)
 
+```bash
     $ # part here to download test_diff_coverage from shared space, ie aws
     $ test_diff rspec
+```
+
+Updating the test coverage index (after separate branch merge into main branch)
+
+```bash
+    $ # part here to download test_diff_coverage from shared space, ie aws
+    $ test_diff build_coverage_diff spec/spec_helper.rb
+    $ # part here to upload test_diff_coverage to a shared space, ie aws
+```
 
 ## Development
 
