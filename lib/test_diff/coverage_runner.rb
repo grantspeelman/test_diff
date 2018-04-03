@@ -16,6 +16,8 @@ module TestDiff
       require 'coverage.so'
       Coverage.start
 
+      ENV['TEST_DIFF_COVERAGE'] = 'yes'
+
       require_boot
       require_rspec
       require_pre_load
@@ -26,9 +28,14 @@ module TestDiff
     private
 
     def require_boot
-      return unless File.exist?('config/boot.rb')
-      puts 'Loading config/boot.rb'
-      require File.expand_path('config/boot.rb')
+      if File.exist?('config/boot.rb')
+        puts 'Loading config/boot.rb'
+        require File.expand_path('config/boot.rb')
+      elsif File.exist?('Gemfile')
+        puts 'Bundler setup'
+        ENV['BUNDLE_GEMFILE'] ||= File.expand_path('Gemfile')
+        require 'bundler/setup'
+      end
     end
 
     def require_pre_load
@@ -39,8 +46,8 @@ module TestDiff
     end
 
     def require_rspec
-      puts 'Loading rspec'
-      require 'rspec'
+      puts 'Loading rspec/core'
+      require 'rspec/core'
     end
 
     def pre_run_checks
@@ -64,7 +71,6 @@ module TestDiff
 
     def start_process_fork(main_spec_file)
       Process.fork do
-        ENV['TEST_DIFF_COVERAGE'] = 'yes'
         puts "running #{main_spec_file}"
         ActiveRecord::Base.connection.reconnect! if defined?(ActiveRecord::Base)
         Time.zone_default = (Time.zone = 'UTC') if Time.respond_to?(:zone_default) && Time.zone_default.nil?
@@ -78,7 +84,7 @@ module TestDiff
       if result
         save_coverage_data(main_spec_file, Time.now - s)
       else
-        $stderr.puts(@last_output.to_s)
+        $stderr.puts(@last_output.string)
         Coverage.result # disable coverage
         exit!(false) unless @continue
       end
