@@ -7,7 +7,7 @@ module TestDiff
     end
 
     def log_debug(*args)
-      Config.logger.info(*args)
+      Config.logger.debug(*args)
     end
 
     module_function :log_debug, :log_info
