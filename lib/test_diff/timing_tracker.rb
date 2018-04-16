@@ -40,7 +40,7 @@ module TestDiff
 
     def do_timing
       puts "Timing #{@original_size} specs"
-      sleep_time = 30.0
+      sleep_time = 90.0
       until queue_empty?
         last_current_size = queue_size
         sleep(sleep_time)
