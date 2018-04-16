@@ -10,6 +10,10 @@ module TestDiff
       Config.logger.debug(*args)
     end
 
-    module_function :log_debug, :log_info
+    def log_error(*args)
+      Config.logger.error(*args)
+    end
+
+    module_function :log_debug, :log_info, :log_error
   end
 end

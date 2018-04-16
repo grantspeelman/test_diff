@@ -6,6 +6,8 @@ module TestDiff
       new(queue).run(&block)
     end
 
+    include Logging
+
     def initialize(queue)
       @queue = queue
       @original_size = queue_size
@@ -33,13 +35,13 @@ module TestDiff
         begin
           do_timing
         rescue => e
-          puts "----- Timing failed: #{e.message} -----"
+          log_error "----- Timing failed: #{e.message} -----"
         end
       end
     end
 
     def do_timing
-      puts "Timing #{@original_size} specs"
+      log_info "Timing #{@original_size} specs"
       sleep_time = 90.0
       until queue_empty?
         last_current_size = queue_size
@@ -48,9 +50,9 @@ module TestDiff
         current_completed = last_current_size - current_size
         if current_completed > 0
           est_time_left = (sleep_time / current_completed.to_f) * current_size
-          puts "specs left #{current_size}, est time_left: #{est_time_left.to_i}"
+          log_info "specs left #{current_size}, est time_left: #{est_time_left.to_i}"
         else
-          puts "specs left #{current_size}, est time_left: N/A"
+          log_info "specs left #{current_size}, est time_left: N/A"
         end
       end
     end
