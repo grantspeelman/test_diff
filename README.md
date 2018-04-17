@@ -22,7 +22,7 @@ And then execute:
 
 ## Rails Setup
 
-Suggest to disabled `eager_load` in `config/environments/test.rb` based on `ENV['TEST_DIFF_COVERAGE']`
+If `eager_load` is enabled in `config/environments/test.rb`, disable it based on `ENV['TEST_DIFF_COVERAGE']`
 EG:
 
 ```ruby
