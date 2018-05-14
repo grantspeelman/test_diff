@@ -1,7 +1,9 @@
 require File.expand_path '../../test_helper.rb', __FILE__
 
 describe TestDiff::Storage do
-  subject { TestDiff::Storage.new('tmp/test_diff_coverage') }
+  let(:times) { {} }
+
+  subject { TestDiff::Storage.new('tmp/test_diff_coverage', times) }
 
   before :each do
     subject.clear
@@ -44,11 +46,6 @@ describe TestDiff::Storage do
       subject.find_for(['test.rb']).must_equal []
     end
 
-    it 'ignores hello_spec.rb because only loaded' do
-      subject.set('hello_spec.rb', 'test.rb' => '0,0,,,0')
-      subject.find_for(['test.rb']).must_equal []
-    end
-
     it 'returns hello_spec.rb' do
       subject.set('hello_spec.rb', 'test.rb' => '1,1')
       subject.find_for(['test.rb']).must_equal ['hello_spec.rb']
@@ -86,18 +83,14 @@ describe TestDiff::Storage do
       get_map_results(['test.rb']).must_equal []
     end
 
-    it 'ignores hello_spec.rb because only loaded' do
-      subject.set('hello_spec.rb', 'test.rb' => '0,0,,,0')
-      get_map_results(['test.rb']).must_equal []
-    end
-
     it 'returns hello_spec.rb' do
       subject.set('hello_spec.rb', 'test.rb' => '1,1')
       get_map_results(['test.rb']).must_equal [{ filename: 'hello_spec.rb', execution_time: nil }]
     end
 
     it 'returns includes the execution time' do
-      subject.set('hello_spec.rb', 'test.rb' => '1,1', '__execution_time__' => 5)
+      times['hello_spec.rb'] = 5
+      subject.set('hello_spec.rb', 'test.rb' => '1,1')
       get_map_results(['test.rb']).must_equal [{ filename: 'hello_spec.rb', execution_time: 5 }]
     end
 
@@ -117,6 +110,14 @@ describe TestDiff::Storage do
     it 'wont return test/other_spec.rb' do
       subject.set('test/other_spec.rb', 'test.rb' => '1,1')
       get_map_results(['app/file.rb']).must_equal []
+    end
+
+    it 'returns all specs if in preload' do
+      subject.preload = { 'test.rb' => '1,1' }
+      subject.set('spec_contiki/hello_spec.rb', 'other.rb' => '1,1')
+      subject.set('spec/tester_spec.rb', 'not.rb' => '1,1')
+      get_map_results(['test.rb']).must_equal [{ filename: 'spec/tester_spec.rb', execution_time: nil },
+                                               { filename: 'spec_contiki/hello_spec.rb', execution_time: nil }]
     end
   end
 end
