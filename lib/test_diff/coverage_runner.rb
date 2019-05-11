@@ -45,11 +45,9 @@ module TestDiff
     def require_pre_load
       return unless @pre_load
       ::Coverage.start
-      start_time = Time.now
       puts "pre_loading #{@pre_load}"
       $LOAD_PATH << "#{Dir.getwd}/spec"
       require File.expand_path(@pre_load)
-      track_pre_load(Time.now - start_time)
     end
 
     def require_rspec
@@ -73,11 +71,6 @@ module TestDiff
         _pid, status = Process.waitpid2(pid)
         raise 'Test Failed' unless status.success?
       end
-    end
-
-    def track_pre_load(execution_time)
-      @storage.preload = CoverageData.get
-      save_execution_time '_pre_load_', execution_time
     end
 
     def start_process_fork(main_spec_file)
