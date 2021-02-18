@@ -50,7 +50,7 @@ describe TestDiff::RunDiff do
       runner = subject.new('tests', nil, nil)
       config.version_control.changed_files = ['tests/example_mtest.rb']
       runner.run
-      config.test_runner.run_tests_value.must_equal(
+      _(config.test_runner.run_tests_value).must_equal(
         ['tests/example_mtest.rb']
       )
     end
@@ -62,7 +62,7 @@ describe TestDiff::RunDiff do
       test_info = TestDiff::TestInfo.new('tests/example_mtest.rb', 1)
       config.storage.select_tests = [test_info]
       runner.run
-      config.test_runner.run_tests_value.must_equal(
+      _(config.test_runner.run_tests_value).must_equal(
         ['tests/example_mtest.rb']
       )
     end
@@ -71,7 +71,7 @@ describe TestDiff::RunDiff do
       runner = subject.new('tests', nil, nil)
       config.version_control.changed_files = ['app/views/example.erb']
       runner.run
-      config.test_runner.run_tests_value.must_equal(
+      _(config.test_runner.run_tests_value).must_equal(
         ['tests/views/example.erb_spec.rb']
       )
     end

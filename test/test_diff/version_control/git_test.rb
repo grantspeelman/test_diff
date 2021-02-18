@@ -28,11 +28,11 @@ describe TestDiff::VersionControl::Git do
     it 'returns only the changed files' do
       g = subject.new('working_dir', 'bd3b3ee', 'd5a979d', DummyGit)
       files = g.changed_files
-      files.must_equal(%w[files_here])
+      _(files).must_equal(%w[files_here])
       dummy_git = DummyGit.instance
-      dummy_git.working_directory.must_equal('working_dir')
-      dummy_git.diff_from.must_equal('bd3b3ee')
-      dummy_git.diff_to.must_equal('d5a979d')
+      _(dummy_git.working_directory).must_equal('working_dir')
+      _(dummy_git.diff_from).must_equal('bd3b3ee')
+      _(dummy_git.diff_to).must_equal('d5a979d')
     end
   end
 end
