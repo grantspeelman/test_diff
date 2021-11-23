@@ -44,7 +44,7 @@ end
 Building the test coverage index (run once a day on your main branch)
 
 ```bash
-    $ test_diff build_coverage spec/spec_helper.rb
+    $ bundle exec test_diff build_coverage spec/spec_helper.rb
     $ # part here to upload test_diff_coverage to a shared space, ie aws
 ```
 
@@ -52,14 +52,14 @@ Running a test difference (after commit on your separate branch)
 
 ```bash
     $ # part here to download test_diff_coverage from shared space, ie aws
-    $ test_diff rspec
+    $ bundle exec test_diff rspec
 ```
 
 Updating the test coverage index (after separate branch merge into main branch)
 
 ```bash
     $ # part here to download test_diff_coverage from shared space, ie aws
-    $ test_diff build_coverage_diff spec/spec_helper.rb
+    $ bundle exec test_diff build_coverage_diff spec/spec_helper.rb
     $ # part here to upload test_diff_coverage to a shared space, ie aws
 ```
 
